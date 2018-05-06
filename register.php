@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once('header.php');
+require_once('functions.php');
 require_once('class-db.php');
 
 if(array_key_exists('id', $_SESSION)){
@@ -13,11 +14,8 @@ $str = sprintf('%s_%s_%s', $time, $action, NONCE);
 $hash = hash('sha512',$str);
 
 if($_POST){
-
-	$calc_str = sprintf('%s_%s_%s',$_POST['timestamp'], $_POST['form_action'], NONCE);
-	$calc_hash = hash('sha512',$calc_str);
 	
-	if($calc_hash == $_POST['form_hash']){
+	if(check_form($_POST)){
 		
 		$args = array(
 		
@@ -27,8 +25,11 @@ if($_POST){
 			'password'=>'FILTER_SANITIZE_STRING'
 		
 		);
-		
-		$post = filter_var_array($_POST, $args);
+		if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
+			$error = 'Inavlid email address';
+		}else{
+			
+			$post = filter_var_array($_POST, $args);
 		if($post){
 			extract($post);
 			//prepare
@@ -54,6 +55,9 @@ if($_POST){
 				}	
 			}
 		}
+			
+		}
+		
 		
 	}else{
 	
@@ -91,13 +95,17 @@ if($_POST){
 	  <button type="submit" class="btn btn-primary">Register</button>
 	</form>
 	<a  href='login.php'>Have an account? Log in</a>
-	<div>
+	<div class='error_box'>
 		<?php
 			if(isset($success)){
 				echo 'Success';
 			}
 			if(isset($error)){
-				echo $error;
+				echo "
+						<div class=\"alert alert-danger\" role=\"alert\">
+						  <b>Error: </b>".$error."
+						</div>
+					 ";
 			}
 		?>
 	</div>

@@ -1,10 +1,11 @@
 <?php
 session_start();
 require_once('header.php');
+require_once('functions.php');
 require_once('class-db.php');
 $time = time();
 $action = 'login_form';
-$str = sprintf('%s_%s_%s', $time, $action, NONCE_SALT);
+$str = sprintf('%s_%s_%s', $time, $action, NONCE);
 $hash = hash('sha512', $str);
 
 if(array_key_exists('id', $_SESSION)){
@@ -17,11 +18,8 @@ if(isset($_GET['loggedOut'])){
 
 
 if($_POST){
-
-	$calc_str = sprintf('%s_%s_%s',$_POST['timestamp'],$_POST['form_action'], NONCE_SALT);
-	$calc_hash = hash('sha512',$calc_str);
 	
-	if($calc_hash == $_POST['form_hash']){
+	if(check_form($_POST)==true){
 		
 		//sanitize
 		$args = array(
@@ -41,7 +39,7 @@ if($_POST){
 				header('Location: home.php');
 			}
 			else{
-				echo 'invalid pwd';
+				$error = 'Invalid email and password combination';
 			}	
 		}else{
 			$error = 'Invalid characters entered';
@@ -75,6 +73,17 @@ if($_POST){
 	  <button type="submit" class="btn btn-primary">Log in</button>
 	</form>
 	<a href='register.php'>Register here</a>
+	<div class='error_box'>
+	<?php
+	if(isset($error)){
+		echo "
+				<div class=\"alert alert-danger\" role=\"alert\">
+					<b>Error:</b> ".$error."
+				</div>
+			 ";
+	}
+	?>
+	</div>
 </div>
 
 
