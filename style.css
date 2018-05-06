@@ -1,0 +1,10 @@
+.container{
+	
+	width:30%;
+	text-align:center;
+}
+#toggle_login, #toggle_register{
+	
+	margin-top:25px;
+	
+}
