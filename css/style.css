@@ -1,0 +1,10 @@
+.container{
+	
+	width:30%;
+	text-align:center;
+}
+
+.toggle_forms, .error_box{
+	
+	margin:10px;
+}	

@@ -69,7 +69,7 @@ if($_POST){
 	  </div>
 	  <button type="submit" class="btn btn-primary">Register</button>
 	</form>
-	<a  href='index.php'>Have an account? Log in</a>
+	<p class='toggle_forms'><a  href='index.php' >Have an account? Log in</a></p>
 	<div class='error_box'>
 		<?php
 			if(isset($success)){

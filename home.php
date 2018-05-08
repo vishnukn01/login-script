@@ -1,7 +1,7 @@
 <?php
 @session_start();
 require_once('header.php');
-require_once('class-db.php');
+require_once('includes/class-db.php');
 
 if(!array_key_exists('id', $_SESSION)){
 	header('Location: index.php');

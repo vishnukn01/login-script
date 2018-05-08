@@ -53,10 +53,10 @@ if($_POST){
 	  <input type='hidden' name='form_action' value='<?php echo $action; ?>'>
 	  <input type='hidden' name='form_hash' value='<?php echo $hash; ?>'>
 	  <div class="form-group">
-		<input type="email" class="form-control" id="email" name="email" placeholder='Email id'>
+		<input type="email" class="form-control" id="email" name="email" placeholder='Email id' required>
 	  </div>
 	  <div class="form-group">
-		<input type="password" class="form-control" id="password" name="password" placeholder='Password'>
+		<input type="password" class="form-control" id="password" name="password" placeholder='Password' required>
 	  </div>
 	  <div class="form-group form-check">
 		<label class="form-check-label">
@@ -65,7 +65,7 @@ if($_POST){
 	  </div>
 	  <button type="submit" class="btn btn-primary">Log in</button>
 	</form>
-	<a href='register.php'>Register here</a>
+	<a href='register.php' class='toggle_forms'>Register here</a>
 	<div class='error_box'>
 	<?php
 	if(isset($error)){
