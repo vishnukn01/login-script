@@ -4,7 +4,7 @@ require_once('header.php');
 require_once('class-db.php');
 
 if(!array_key_exists('id', $_SESSION)){
-	header('Location: login.php');
+	header('Location: index.php');
 }
 
 ?>
@@ -29,7 +29,7 @@ if(!array_key_exists('id', $_SESSION)){
 			
 			}
 		?>
-		<h3><a href='login.php?loggedOut=1'>Log out</a></h3>
+		<h3><a href='index.php?loggedOut=1'>Log out</a></h3>
 		</h2>
 	</div>
 

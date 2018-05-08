@@ -1,8 +1,8 @@
 <?php
 session_start();
 require_once('header.php');
-require_once('functions.php');
-require_once('class-db.php');
+require_once('load.php');
+
 $time = time();
 $action = 'login_form';
 $str = sprintf('%s_%s_%s', $time, $action, NONCE);
@@ -14,40 +14,33 @@ if(array_key_exists('id', $_SESSION)){
 
 if(isset($_GET['loggedOut'])){
 	session_destroy();
+	setcookie('id','',time()-60*60);
+	$_COOKIE['id'] = '';
 }
 
-
-if($_POST){
+if($_POST){	
 	
 	if(check_form($_POST)==true){
 		
-		//sanitize
 		$args = array(
 			'email'=>'FILTER_VALIDATE_EMAIL',
 			'password'=>'FILTER_SANITIZE_STRING'
 		);
 		$post = filter_var_array($_POST, $args);
 		if($post){
-			extract($post);
-			$link = $db->connect();
-			$email = mysqli_real_escape_string($link, $email);
-			$result = $link->query("SELECT * FROM users WHERE email='$email' LIMIT 1");
-			$row = $result->fetch_assoc();
-			if($row['password'] == md5( md5($row['id']).$password ) ){
-				
-				$_SESSION['id'] = $row['id'];
+		
+			if($login->login_check($post)){
 				header('Location: home.php');
-			}
-			else{
+			}else{	
 				$error = 'Invalid email and password combination';
-			}	
-		}else{
+			}
+		}
+		else{
 			$error = 'Invalid characters entered';
-		}	
+		}			
 	}else{
 		$error = 'Failed to submit form. Please try again.';
 	}
-
 }
 
 ?>
@@ -67,7 +60,7 @@ if($_POST){
 	  </div>
 	  <div class="form-group form-check">
 		<label class="form-check-label">
-		  <input class="form-check-input" type="checkbox"> Stay logged in
+		  <input class="form-check-input" type="checkbox" name='stayLoggedIn' value='1'> Stay logged in
 		</label>
 	  </div>
 	  <button type="submit" class="btn btn-primary">Log in</button>

@@ -1,8 +1,7 @@
 <?php
 session_start();
 require_once('header.php');
-require_once('functions.php');
-require_once('class-db.php');
+require_once('load.php');
 
 if(array_key_exists('id', $_SESSION)){
 	header('Location: home.php');
@@ -17,54 +16,30 @@ if($_POST){
 	
 	if(check_form($_POST)){
 		
-		$args = array(
-		
+		$args = array(		
 			'fullname'=>'FILTER_SANITIZE_STRING',
 			'username'=>'FILTER_SANITIZE_STRING',
 			'email'=>'FILTER_VALIDATE_EMAIL',
-			'password'=>'FILTER_SANITIZE_STRING'
-		
+			'password'=>'FILTER_SANITIZE_STRING'	
 		);
 		if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
 			$error = 'Inavlid email address';
 		}else{
 			
 			$post = filter_var_array($_POST, $args);
-		if($post){
-			extract($post);
-			//prepare
-			
-			$link = $db->connect();
-			
-			$stmt = $link->prepare("INSERT INTO users (fullname, username, email, password) VALUES (?,?,?,?)");
-			$stmt->bind_param('ssss',$fullname, $username,$email, $password);
-			$stmt->execute();
-			if($stmt->affected_rows){
-				
-				$id = $stmt->insert_id;
-				$password_updated = md5( md5($id).$password );
-				$query = "UPDATE users SET password='$password_updated'
-						  WHERE id=$id
-						 ";
-				$result = $link->query($query);
-				
-				if($result){
-					
-					$_SESSION['id'] = $id;
+			if($post){
+				$signup = $register->signUp($post);
+				if($signup){
 					header('Location: home.php');
-				}	
+				}
 			}
 		}
 			
-		}
-		
-		
-	}else{
-	
+	}else{		
 		$error = 'Error submitting the form.';
 	}
+		
 }
-
 ?>
 
 <div class='container'>
@@ -89,12 +64,12 @@ if($_POST){
 	  </div>
 	  <div class="form-group form-check">
 		<label class="form-check-label">
-		  <input class="form-check-input" type="checkbox"> Stay logged in
+		  <input class="form-check-input" type="checkbox" name='stayLoggedIn' value='1'> Stay logged in
 		</label>
 	  </div>
 	  <button type="submit" class="btn btn-primary">Register</button>
 	</form>
-	<a  href='login.php'>Have an account? Log in</a>
+	<a  href='index.php'>Have an account? Log in</a>
 	<div class='error_box'>
 		<?php
 			if(isset($success)){
